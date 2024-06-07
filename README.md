@@ -1,7 +1,7 @@
 # MAE 148 Spring 2024 Team 5 Final Project 
 ##  RC Car Tennis Ball Boy with Odometry and YOLO 
 
-![logo](https://jacobsschool.ucsd.edu/sites/default/files/groups/jsoe/img/logos/jacobs-school/digital/UCSDLogo_JSOE_BlueGold_Web.jpg) 
+##![logo](https://jacobsschool.ucsd.edu/sites/default/files/groups/jsoe/img/logos/jacobs-school/digital/UCSDLogo_JSOE_BlueGold_Web.jpg) 
  
 
 ### Team 5 - Saimai Lau - MAE, Ryan Salas - MAE, Cynthia Do - MAE, Theo Emery - MAE
