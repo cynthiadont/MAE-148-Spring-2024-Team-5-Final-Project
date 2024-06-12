@@ -34,7 +34,6 @@ We wanted to make an RC car that would be able to fulfill the responsibilities o
 ### Nice-to-Haves
 - Relay ball to player serving (when needed)
 - Obstacle avoidance
-- Not get hit
 
 ### Main Hardware Utilized 
 - Jetson Nano
@@ -42,8 +41,8 @@ We wanted to make an RC car that would be able to fulfill the responsibilities o
 - GNSS 
 - VESC Motor Controller 
 
-### Ball Recognition with YOLO & ROS2 Packages
-yes
+### Ball Recognition with YOLO Model Trained Using Roboflow
+<img src="https://media.discordapp.net/attachments/1224900279640789092/1237598768279588945/image.png?ex=666b086b&is=6669b6eb&hm=77f567fdb34778838dedec47933bc472ec1856f1d8093feaf891f2f6452aa505&=&format=webp&quality=lossless&width=1227&height=669" width = "900">
 
 ## Pathing Journey
 Initially, we began with using the GNSS localization and switched over to the GNSS IMU to attempt to stabilize the drift of the car. Now we're using Odometry instead due to 
@@ -59,7 +58,7 @@ so true
 
 Early Grabber Mechanism Designs and Ideas: 
 <p float="left">
-<img src="https://media.discordapp.net/attachments/879993760937816084/1248464859385827398/image.png?ex=6663c301&is=66627181&hm=6d428517fefcfe690a2f5fd98ff99379ab4b092fa4bc75389e3ca4e9ab9ed7d0&=&format=webp&quality=lossless&width=482&height=288" width = 320">
+<img src="https://media.discordapp.net/attachments/879993760937816084/1248464859385827398/image.png?ex=6663c301&is=66627181&hm=6d428517fefcfe690a2f5fd98ff99379ab4b092fa4bc75389e3ca4e9ab9ed7d0&=&format=webp&quality=lossless&width=482&height=288" width = "320">
 
 <img src="https://media.discordapp.net/attachments/879993760937816084/1248465094829019146/image.png?ex=6663c339&is=666271b9&hm=41664c44e0a79ffe2ef2c6e1e0d8bc95407864aa4c4c076e9b7d8f018741ec63&=&format=webp&quality=lossless&width=312&height=299" width = "320">
 
@@ -72,8 +71,10 @@ Early Grabber Mechanism Designs and Ideas:
 
 <img src="https://media.discordapp.net/attachments/879993760937816084/1248465784078991360/image.png?ex=6663c3de&is=6662725e&hm=cc8bc3d95eaeb72ac6ae31aa5d6edf7789a9fd18a8ec842b3d0a96693ec93334&=&format=webp&quality=lossless&width=691&height=627" width = "300">
 
-<img src="https://media.discordapp.net/attachments/879993760937816084/1248465935971520603/image.png?ex=6663c402&is=66627282&hm=501ed8f4bcc4f8e0e7052f0c0eaaa6370fc6f4e306b83fb6f84d6435881c96f3&=&format=webp&quality=lossless&width=449&height=400" width = "300"> 
+<img src="https://media.discordapp.net/attachments/879993760937816084/1250581603759947796/IMG_5601.jpg?ex=666b7661&is=666a24e1&hm=36307877986e9204bed57e5265c702ce9228f5cde6f8a0b3abe86a55fc11bc6e&=&format=webp&width=501&height=669" width = "250"> 
 </p>
 
+### References 
+Odometry Calibration Guide: https://f1tenth.readthedocs.io/en/foxy_test/getting_started/driving/drive_calib_odom.html
 
 ### Acknowledgements 
