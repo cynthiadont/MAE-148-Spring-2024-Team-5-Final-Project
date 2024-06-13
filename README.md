@@ -34,7 +34,6 @@ We wanted to make an RC car that would be able to fulfill the responsibilities o
 ### Nice-to-Haves
 - Relay ball to player serving (when needed)
 - Obstacle avoidance
-- Not get hit
 
 ### Main Hardware Utilized 
 - Jetson Nano
@@ -42,24 +41,30 @@ We wanted to make an RC car that would be able to fulfill the responsibilities o
 - GNSS 
 - VESC Motor Controller 
 
-### Ball Recognition with YOLO & ROS2 Packages
-yes
+### Ball Recognition with YOLO Model Trained Using Roboflow
+<img src="https://media.discordapp.net/attachments/1224900279640789092/1237598768279588945/image.png?ex=666b086b&is=6669b6eb&hm=77f567fdb34778838dedec47933bc472ec1856f1d8093feaf891f2f6452aa505&=&format=webp&quality=lossless&width=1227&height=669" width = "840">
 
 ## Pathing Journey
 Initially, we began with using the GNSS localization and switched over to the GNSS IMU to attempt to stabilize the drift of the car. Now we're using Odometry instead due to 
 
-### GNSS / IMU
+### LQR Control
+For path tracking, like PID control, it adjusts the inputs for steering the RC Car while accounting for error from the calculated trajectory and works with a feedback loop for continuous updating of the inputs and path deviation.  but penalizes accuator efforts, 
 
-### LQR 
+[![LQR Simulation in ROS2](http://img.youtube.com/vi/OvJ9mGfcxE4/0.jpg)](http://www.youtube.com/watch?v=OvJ9mGfcxE4 "LQR Simualtion in ROS2")
+
+### GNSS / IMU
+unstable with camera, tried update the firmware to use the AP module which uses the gps signal and IMU, but still had issues with the camera where the location coordinates were not stored and kept, with the imu for sensor fusion, then it detects change in orientation better htan the AM module which does not use the IMU, 
+we tried getting the initial location coordinates first then turn on the camera to find the tennis ball which was transformed from camera frame into global gps frame then switched off the camera 
+then the gps wasnt accurate enough to get to the tennis ball with this, error was about +/- 1 meter so we switched to odometry
 
 ### Odometry Pathing  
-so true
+calirating odometry on the car by reading the rpm from VESC and suscribing to the drive message for chang in orientation, successful in convertin rpm to speed, but hte steering angle was highly non-linear and the drive message doesnt accurate reflect the turning angle in reality, so we decided to use a seed IMU for the orientation then added the odometry package to subscribe to an IMU topic, then integrate the chagne in position using linear velocity from VESC and orientation from IMU 
 
 ### CAD 
 
 Early Grabber Mechanism Designs and Ideas: 
 <p float="left">
-<img src="https://media.discordapp.net/attachments/879993760937816084/1248464859385827398/image.png?ex=6663c301&is=66627181&hm=6d428517fefcfe690a2f5fd98ff99379ab4b092fa4bc75389e3ca4e9ab9ed7d0&=&format=webp&quality=lossless&width=482&height=288" width = 320">
+<img src="https://media.discordapp.net/attachments/879993760937816084/1248464859385827398/image.png?ex=6663c301&is=66627181&hm=6d428517fefcfe690a2f5fd98ff99379ab4b092fa4bc75389e3ca4e9ab9ed7d0&=&format=webp&quality=lossless&width=482&height=288" width = "320">
 
 <img src="https://media.discordapp.net/attachments/879993760937816084/1248465094829019146/image.png?ex=6663c339&is=666271b9&hm=41664c44e0a79ffe2ef2c6e1e0d8bc95407864aa4c4c076e9b7d8f018741ec63&=&format=webp&quality=lossless&width=312&height=299" width = "320">
 
@@ -72,8 +77,10 @@ Early Grabber Mechanism Designs and Ideas:
 
 <img src="https://media.discordapp.net/attachments/879993760937816084/1248465784078991360/image.png?ex=6663c3de&is=6662725e&hm=cc8bc3d95eaeb72ac6ae31aa5d6edf7789a9fd18a8ec842b3d0a96693ec93334&=&format=webp&quality=lossless&width=691&height=627" width = "300">
 
-<img src="https://media.discordapp.net/attachments/879993760937816084/1248465935971520603/image.png?ex=6663c402&is=66627282&hm=501ed8f4bcc4f8e0e7052f0c0eaaa6370fc6f4e306b83fb6f84d6435881c96f3&=&format=webp&quality=lossless&width=449&height=400" width = "300"> 
+<img src="https://media.discordapp.net/attachments/879993760937816084/1250581603759947796/IMG_5601.jpg?ex=666b7661&is=666a24e1&hm=36307877986e9204bed57e5265c702ce9228f5cde6f8a0b3abe86a55fc11bc6e&=&format=webp&width=501&height=669" width = "250"> 
 </p>
 
+### References 
+Odometry Calibration Guide: https://f1tenth.readthedocs.io/en/foxy_test/getting_started/driving/drive_calib_odom.html
 
 ### Acknowledgements 
