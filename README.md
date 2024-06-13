@@ -85,6 +85,16 @@ Early Grabber Mechanism Designs and Ideas:
 </p>
 
 ### References 
-Odometry Calibration Guide: https://f1tenth.readthedocs.io/en/foxy_test/getting_started/driving/drive_calib_odom.html
+Odometry Calibration Guide: https://f1tenth.readthedocs.io/en/foxy_test/getting_started/driving/drive_calib_odom.html 
+https://github.com/ros-drivers/nmea_navsat_driver/tree/master 
+https://www.seeedstudio.com/Seeed-XIAO-BLE-Sense-nRF52840-p-5253.html
+RazorIMU: https://github.com/NikitaB04/razorIMU_9dof/tree/main
+PointOne ROS2 Driver: https://github.com/PointOneNav/ros2-fusion-engine-driver/tree/main
+PointOne Calibration Understanding: https://pointonenav.com/news/calibration-for-ins-rtk/
+PointOne Firmware: https://github.com/PointOneNav/firmware-tools/tree/main
+https://pointonenav.com/wp-content/uploads/2023/09/FusionEngine-Message-Specification-v0.18.pdf
+ROS2Foxy: https://f1tenth.readthedocs.io/en/foxy_test/getting_started/driving/drive_calib_odom.html
+VESC Controller: https://github.com/f1tenth/vesc/tree/ros2
+https://github.com/ros-drivers/ackermann_msgs/tree/ros2
 
 ### Acknowledgements 
