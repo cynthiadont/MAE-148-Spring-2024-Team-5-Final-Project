@@ -19,7 +19,7 @@ class detectTran(Node):
         self.timer = self.create_timer(0.3, self.on_timer)
 
         self.T = np.array([[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]])
-        self.inR = np.array([[1,0,0,0],[0,0,-1,0],[0,1,0,0],[0,0,0,1]])
+        self.inR = np.array([[0,0,-1,0],[-1,0,0,0],[0,1,0,0],[0,0,0,1]])
         namespace1 = self.get_namespace()
         self.name = namespace1
         if namespace1=="/":
@@ -33,10 +33,10 @@ class detectTran(Node):
 
         self.publ_pts = self.create_publisher(Float64MultiArray, namespace1+"/ball_loc", 10)
 
-        self.create_subscription(PoseStamped, namespace1+"/pose", self.callbackFn2, 
-                                                    QoSProfile(depth=10, reliability=ReliabilityPolicy.BEST_EFFORT))
-        # self.create_subscription(Odometry, "/odom", self.odomCallback, 
+        # self.create_subscription(PoseStamped, namespace1+"/pose", self.callbackFn2, 
         #                                             QoSProfile(depth=10, reliability=ReliabilityPolicy.BEST_EFFORT))
+        self.create_subscription(Odometry, namespace1+"/odom", self.odomCallback, 
+                                                    QoSProfile(depth=10, reliability=ReliabilityPolicy.BEST_EFFORT))
         # self.create_subscription(NavSatFix, "/fix", self.gpsCallback, 
         #                                             QoSProfile(depth=10, reliability=ReliabilityPolicy.BEST_EFFORT))
         # self.create_subscription(Quaternion, "/heading", self.headingCallback, 
@@ -209,11 +209,10 @@ class detectTran(Node):
         self.pose[1] = y
         angles = self.toEulerAngles(msg.pose.pose.orientation)
         self.yaw = angles[2]
-        if not(self.gotPose) and self.yaw != 0.0:
+        if not(self.gotPose):
+            self.startPose[0],self.startPose[1] = x,y
             self.gotPose = True
             self.get_logger().info("Got Position")
-            self.startPose[0] = x
-            self.startPose[1] = y
 
     def gpsCallback(self, msg: NavSatFix):
         lat = msg.latitude

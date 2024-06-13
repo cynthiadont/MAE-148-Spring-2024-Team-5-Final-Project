@@ -6,7 +6,7 @@ from rclpy.qos import ReliabilityPolicy, QoSProfile
 from std_msgs.msg import Float64MultiArray
 from geometry_msgs.msg import Twist, PoseStamped, Quaternion
 from nav_msgs.msg import Odometry
-from sensor_msgs.msg import NavSatFix
+from sensor_msgs.msg import NavSatFix, Imu
 import matplotlib.pyplot as plt
 import utm
 import pickle
@@ -24,8 +24,10 @@ class plot_stuff(Node):
                                                     QoSProfile(depth=10, reliability=ReliabilityPolicy.BEST_EFFORT))
         # self.create_subscription(PoseStamped, self.robot+"/pose", self.locCallback, 
         #                                             QoSProfile(depth=10, reliability=ReliabilityPolicy.BEST_EFFORT))
-        self.create_subscription(Odometry, "/odom", self.odomCallback, 
+        self.create_subscription(Odometry, self.robot+"/odom", self.odomCallback, 
                                                     QoSProfile(depth=10, reliability=ReliabilityPolicy.BEST_EFFORT))
+        # self.create_subscription(Imu, "/team5/imu", self.imuCallback, 
+        #                                             QoSProfile(depth=10, reliability=ReliabilityPolicy.BEST_EFFORT))
         # self.create_subscription(NavSatFix, "/fix", self.gpsCallback, 
         #                                             QoSProfile(depth=10, reliability=ReliabilityPolicy.BEST_EFFORT))
         # self.create_subscription(Quaternion, "/heading", self.headingCallback, 
@@ -75,7 +77,16 @@ class plot_stuff(Node):
         self.pose[1] = y
         angles = self.toEulerAngles(msg.pose.pose.orientation)
         self.yaw = angles[2]
+        z = msg.pose.pose.orientation.z
+        w = msg.pose.pose.orientation.w
+        print(self.yaw)
         self.plot_things()
+
+    def imuCallback(self, msg: Imu):
+        angles = self.toEulerAngles(msg.orientation)
+        self.yaw = angles[0]
+        self.plot_things()
+        print(f"Yaw angle: {np.rad2deg(self.yaw)}")
 
     def gpsCallback(self, msg: NavSatFix):
         lat = msg.latitude
@@ -105,17 +116,17 @@ class plot_stuff(Node):
         self.preX.append(self.pose[0])
         self.preY.append(self.pose[1])
         n = len(self.preX)-2
-        # plt.scatter(self.preX[0:n-21],self.preY[0:n-21])
-        # plt.scatter(self.preX[n-21:n-15],self.preY[n-21:n-15])
-        # plt.scatter(self.preX[n-15:n-9],self.preY[n-15:n-9])
+        plt.scatter(self.preX[0:n-21],self.preY[0:n-21])
+        plt.scatter(self.preX[n-21:n-15],self.preY[n-21:n-15])
+        plt.scatter(self.preX[n-15:n-9],self.preY[n-15:n-9])
         plt.scatter(self.preX[n-9:n-3],self.preY[n-9:n-3])
         plt.scatter(self.preX[n-3:-1],self.preY[n-3:-1])
-        plt.arrow(self.pose[0],self.pose[1],5*np.cos(self.yaw),5*np.sin(self.yaw), width=0.3, label = 'orientation')
+        plt.arrow(self.pose[0],self.pose[1],2.1*np.cos(self.yaw),2.1*np.sin(self.yaw), width=0.15, label = 'orientation')
         plt.legend()
         # plt.xlim(self.inpose[0]-60,self.inpose[0]+60)
         # plt.ylim(self.inpose[1]-60,self.inpose[1]+60)
-        plt.xlim(self.inpose[0]-30,self.inpose[0]+30)
-        plt.ylim(self.inpose[1]-30,self.inpose[1]+30)
+        plt.xlim(self.inpose[0]-10,self.inpose[0]+10)
+        plt.ylim(self.inpose[1]-10,self.inpose[1]+10)
         plt.pause(0.01)
 
     def toEulerAngles(self, q:Quaternion):

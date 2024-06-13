@@ -32,6 +32,7 @@ setup(
             'follow_ball = team5_project.follow_ball:main',
             'plot_stuff = team5_project.plot_stuff:main',
             'sim = team5_project.simulation:main',
+            'odom = team5_project.odom:main',
         ],
     },
 )

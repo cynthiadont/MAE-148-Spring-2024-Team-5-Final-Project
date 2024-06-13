@@ -14,7 +14,8 @@ from .find_path import pathFinder
 from sensor_msgs.msg import NavSatFix
 import utm
 from .find_tennis_ball_2 import ballDection
-from ackermann_msgs.msg import AckermannDrive
+from ackermann_msgs.msg import AckermannDriveStamped
+from nav_msgs.msg import Odometry
 
 class followTarget(Node):
     def __init__(self):
@@ -23,12 +24,18 @@ class followTarget(Node):
         self.name = namespace1
         if namespace1=="/":
             namespace1 = "/team5"
+        self.useOdom = True
 
-        self.pubT = self.create_publisher(Twist, namespace1+"/cmd_vel", 10)
+        if not(self.useOdom):
+            self.pubT = self.create_publisher(Twist, namespace1+"/cmd_vel", 10)
+            self.create_subscription(PoseStamped, namespace1+"/pose", self.locCallback, 
+                                                    QoSProfile(depth=10, reliability=ReliabilityPolicy.BEST_EFFORT))
+        else:
+            self.pubT2 = self.create_publisher(AckermannDriveStamped, "/ackermann_cmd", 10)
+            self.create_subscription(Odometry, namespace1+"/odom", self.odomCallback, 
+                                                    QoSProfile(depth=10, reliability=ReliabilityPolicy.BEST_EFFORT))
 
-        # self.create_subscription(Float64MultiArray, namespace1+"/ball_loc", self.ballCallback, 
-        #                                             QoSProfile(depth=10, reliability=ReliabilityPolicy.BEST_EFFORT))
-        self.create_subscription(PoseStamped, namespace1+"/pose", self.locCallback, 
+        self.create_subscription(Float64MultiArray, namespace1+"/ball_loc", self.ballCallback, 
                                                     QoSProfile(depth=10, reliability=ReliabilityPolicy.BEST_EFFORT))
         # self.create_subscription(NavSatFix, "/fix", self.gpsCallback, 
         #                                             QoSProfile(depth=10, reliability=ReliabilityPolicy.BEST_EFFORT))
@@ -37,8 +44,8 @@ class followTarget(Node):
         self.ball = np.array([0.0,0.0])
         self.inpose = np.array([0.0,0.0])
         self.steerMid = -0.0   # -0.12
-        self.maxSpeed = 1.2
-        self.minSpeed = 0.6
+        self.maxSpeed = 0.9
+        self.minSpeed = 0.45
         self.x, self.y, self.yaw, self.v = 0.0, 0.0, 0.0, 0.0
         # LQR parameter
         self.lqr_Q = np.eye(5)
@@ -46,7 +53,7 @@ class followTarget(Node):
         self.lqr_R[0][0] = 1.5
         self.t = time.time()  # time tick[s]
         self.L = 0.3302  # Wheel base of the vehicle [m]
-        self.max_steer = np.deg2rad(30.0)  # maximum steering angle[rad]
+        self.max_steer = np.deg2rad(60.0)  # maximum steering angle[rad]
         self.goal_dis = 0.3
         self.stop_speed = 0.05
         self.dt = 0.0
@@ -57,8 +64,8 @@ class followTarget(Node):
         self.px = 0.0
         self.py = 0.0
         self.gotPose = False
-        self.detector = ballDection()            # comment this out for simulation
-        tem = input("Press enter when ready ")
+        # self.detector = ballDection()            # comment this out for simulation
+        # tem = input("Press enter when ready ")
         self.create_timer(0.1, self.timerCallback)
 
     def ballCallback(self, msg: Float64MultiArray):
@@ -77,6 +84,18 @@ class followTarget(Node):
         self.y = y
         angles = self.toEulerAngles(msg.pose.orientation)
         self.yaw = math.remainder(-angles[2]-np.pi, math.tau)
+        if not(self.gotPose):
+            self.inpose[0],self.inpose[1] = x,y
+            self.gotPose = True
+            self.get_logger().info("Got Position")
+
+    def odomCallback(self, msg: Odometry):
+        x = msg.pose.pose.position.x
+        y = msg.pose.pose.position.y
+        self.x = x
+        self.y = y
+        angles = self.toEulerAngles(msg.pose.pose.orientation)
+        self.yaw = angles[2]
         if not(self.gotPose):
             self.inpose[0],self.inpose[1] = x,y
             self.gotPose = True
@@ -114,7 +133,7 @@ class followTarget(Node):
         ax, ay = tem.getWayPts()
         self.ctrlSf['cx'], self.ctrlSf['cy'], self.ctrlSf['cyaw'], self.ctrlSf['ck'], s = cubic_spline_planner.calc_spline_course(
                 ax, ay, ds=0.1)
-        target_speed = 10.0 / 3.6
+        target_speed = 0.5 # 10.0 / 3.6
         self.ctrlSf['sp'] = self.calc_speed_profile(self.ctrlSf['cyaw'], target_speed)
         self.go = True
 
@@ -133,17 +152,25 @@ class followTarget(Node):
         if self.v <= self.minSpeed:
             self.v = self.minSpeed
 
-        cmd = Twist()
-        cmd.linear.x = self.v
-        cmd.angular.z = -1*delta/self.dt/5+self.steerMid
-        # print(f"Want to turn: {delta}")
-        self.pubT.publish(cmd)
+        if not(self.useOdom):
+            cmd = Twist()
+            cmd.linear.x = self.v
+            cmd.angular.z = -1*delta/self.dt/5+self.steerMid
+            # print(f"Want to turn: {delta}")
+            self.pubT.publish(cmd)
+        else:
+            cmd = AckermannDriveStamped()
+            cmd.drive.steering_angle = -delta/2.4
+            cmd.drive.steering_angle_velocity = delta/self.dt
+            cmd.drive.speed = -self.v
+            cmd.drive.acceleration = -accel
+            self.pubT2.publish(cmd)
 
     def timerCallback(self):
-        if self.gotPose and not(self.go) and not(self.gotBall):            # commment this out for simulation
-            self.ball = self.detector.get_ball_loc(self.x, self.y, self.yaw)
-            self.get_logger().info(f"Got ball location data, following {self.ball}...")
-            self.move()
+        # if self.gotPose and not(self.go) and not(self.gotBall):            # commment this out for simulation
+        #     self.ball = self.detector.get_ball_loc(self.x, self.y, self.yaw)
+        #     self.get_logger().info(f"Got ball location data, following {self.ball}...")
+        #     self.move()
         # if self.gotPose and not(self.go) and self.gotBall:
         #     self.get_logger().info(f"Now going back to where it started...")
         #     self.move()
