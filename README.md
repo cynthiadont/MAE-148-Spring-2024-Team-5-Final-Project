@@ -42,17 +42,23 @@ We wanted to make an RC car that would be able to fulfill the responsibilities o
 - VESC Motor Controller 
 
 ### Ball Recognition with YOLO Model Trained Using Roboflow
-<img src="https://media.discordapp.net/attachments/1224900279640789092/1237598768279588945/image.png?ex=666b086b&is=6669b6eb&hm=77f567fdb34778838dedec47933bc472ec1856f1d8093feaf891f2f6452aa505&=&format=webp&quality=lossless&width=1227&height=669" width = "900">
+<img src="https://media.discordapp.net/attachments/1224900279640789092/1237598768279588945/image.png?ex=666b086b&is=6669b6eb&hm=77f567fdb34778838dedec47933bc472ec1856f1d8093feaf891f2f6452aa505&=&format=webp&quality=lossless&width=1227&height=669" width = "840">
 
 ## Pathing Journey
 Initially, we began with using the GNSS localization and switched over to the GNSS IMU to attempt to stabilize the drift of the car. Now we're using Odometry instead due to 
 
-### GNSS / IMU
+### LQR Control
+For path tracking, like PID control, it adjusts the inputs for steering the RC Car while accounting for error from the calculated trajectory and works with a feedback loop for continuous updating of the inputs and path deviation.  but penalizes accuator efforts, 
 
-### LQR 
+[![LQR Simulation in ROS2](http://img.youtube.com/vi/OvJ9mGfcxE4/0.jpg)](http://www.youtube.com/watch?v=OvJ9mGfcxE4 "LQR Simualtion in ROS2")
+
+### GNSS / IMU
+unstable with camera, tried update the firmware to use the AP module which uses the gps signal and IMU, but still had issues with the camera where the location coordinates were not stored and kept, with the imu for sensor fusion, then it detects change in orientation better htan the AM module which does not use the IMU, 
+we tried getting the initial location coordinates first then turn on the camera to find the tennis ball which was transformed from camera frame into global gps frame then switched off the camera 
+then the gps wasnt accurate enough to get to the tennis ball with this, error was about +/- 1 meter so we switched to odometry
 
 ### Odometry Pathing  
-so true
+calirating odometry on the car by reading the rpm from VESC and suscribing to the drive message for chang in orientation, successful in convertin rpm to speed, but hte steering angle was highly non-linear and the drive message doesnt accurate reflect the turning angle in reality, so we decided to use a seed IMU for the orientation then added the odometry package to subscribe to an IMU topic, then integrate the chagne in position using linear velocity from VESC and orientation from IMU 
 
 ### CAD 
 
