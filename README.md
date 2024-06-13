@@ -58,7 +58,7 @@ we tried getting the initial location coordinates first then turn on the camera 
 then the gps wasnt accurate enough to get to the tennis ball with this, error was about +/- 1 meter so we switched to odometry
 
 ### Odometry Pathing  
-calirating odometry on the car by reading the rpm from VESC and suscribing to the drive message for chang in orientation, successful in convertin rpm to speed, but hte steering angle was highly non-linear and the drive message doesnt accurate reflect the turning angle in reality, so we decided to use a seed IMU for the orientation then added the odometry package to subscribe to an IMU topic, then integrate the chagne in position using linear velocity from VESC and orientation from IMU 
+Initially, the odometry of the car was determined by reading the rpm from VESC and subscribing to the driving message for a change in orientation based on servo position. This was successful in converting rpm to speed, but the steering angle was highly non-linear and the drive message didn't accurately reflect the turning angle in reality. This led to error buildup and loss of localization when turning. To combat this we decided to instead use a seed IMU for the orientation then add the odometry package to subscribe to an IMU topic, then integrate the change in position using linear velocity from VESC and orientation from IMU.
 
 ### CAD 
 
