@@ -68,12 +68,16 @@ Early Grabber Mechanism Designs and Ideas:
 
 <img src="https://media.discordapp.net/attachments/879993760937816084/1248465094829019146/image.png?ex=6663c339&is=666271b9&hm=41664c44e0a79ffe2ef2c6e1e0d8bc95407864aa4c4c076e9b7d8f018741ec63&=&format=webp&quality=lossless&width=312&height=299" width = "320">
 
-<img src="https://media.discordapp.net/attachments/879993760937816084/1248465316921606235/image.png?ex=6663c36e&is=666271ee&hm=1c0ee1f97ca4425291c06dd32b8791541302cadcb91a2de84e3c6a45665462d5&=&format=webp&quality=lossless&width=306&height=257" width = "320">
 
 </p>
 
 <p float="left">
+
+<img src="https://media.discordapp.net/attachments/879993760937816084/1248465316921606235/image.png?ex=6663c36e&is=666271ee&hm=1c0ee1f97ca4425291c06dd32b8791541302cadcb91a2de84e3c6a45665462d5&=&format=webp&quality=lossless&width=306&height=257" width = "320">
+
 <img src="https://media.discordapp.net/attachments/879993760937816084/1248465615220506695/image.png?ex=6663c3b6&is=66627236&hm=bd5b181ff9e1f285fef4e4513d8f4caf359b04edb60d0ee62232aefabe716704&=&format=webp&quality=lossless&width=583&height=508" width = "300"> 
+
+<p float="left">
 
 <img src="https://media.discordapp.net/attachments/879993760937816084/1248465784078991360/image.png?ex=6663c3de&is=6662725e&hm=cc8bc3d95eaeb72ac6ae31aa5d6edf7789a9fd18a8ec842b3d0a96693ec93334&=&format=webp&quality=lossless&width=691&height=627" width = "300">
 
