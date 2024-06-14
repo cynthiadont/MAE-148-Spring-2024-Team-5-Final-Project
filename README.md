@@ -60,13 +60,21 @@ Initially, the odometry of the car was determined by reading the rpm from VESC a
 
 
 Overall, to start the program do:
+
 Open 3 terminals, all ssh into the jetson
+
 On Terminal1: docker start -ai test_container
+
 On Terminal2 & 3: docker exec -it test_container bash
+
 On all 3 Terminals: source_ros2
+
 On Terminal 1: ros2 launch ucsd_robocar_nav2_pkg all_nodes.launch.py
+
 Wait for it to show [razor_imu_node]: Publishing IMU data...
+
 On Terminal2: ros2 run team5_project find_tennis_ball --ros-args -r __ns:=/team5
+
 On Terminal3: ros2 run team5_project follow_ball --ros-args -r __ns:=/team5
 
 
