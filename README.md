@@ -45,37 +45,37 @@ We wanted to make an RC car that would be able to fulfill the responsibilities o
 <img src="https://media.discordapp.net/attachments/1224900279640789092/1237598768279588945/image.png?ex=666b086b&is=6669b6eb&hm=77f567fdb34778838dedec47933bc472ec1856f1d8093feaf891f2f6452aa505&=&format=webp&quality=lossless&width=1227&height=669" width = "840">
 
 ## Pathing Journey
-Initially, we began with using the GNSS localization and switched over to the GNSS IMU to attempt to stabilize the drift of the car. Now we're using Odometry instead due to 
+Initially, we began with using the GNSS localization and switched over to the GNSS IMU to attempt to stabilize the car's drift. Now we're using Odometry instead due to 
 
 ### LQR Control
-For path tracking, like PID control, it adjusts the inputs for steering the RC Car while accounting for error from the calculated trajectory and works with a feedback loop for continuous updating of the inputs and path deviation.  but penalizes accuator efforts, 
+For path tracking, like PID control, it adjusts the inputs for steering the RC Car while accounting for errors from the calculated trajectory and works with a feedback loop for continuous updating of the inputs and path deviation.
 
 [![LQR Simulation in ROS2](http://img.youtube.com/vi/OvJ9mGfcxE4/0.jpg)](http://www.youtube.com/watch?v=OvJ9mGfcxE4 "LQR Simualtion in ROS2")
 
 ### GNSS / IMU
-Using the GNSS was fine however, additionally overlaying it with the camera ball-finding did not work. With both on, the position tracking was paused and the ball finding was malfunctioning. We attempted to update the firmware to use the AP module that utilizes the GPS signal and the IMU of the GPS but there were still issues with the simultaneous usage of the camera and the storing of location coordinates. With the IMU’s sensor fusion, we were able to detect a change in orientation better than with the AM module that does not use the IMU. Later, we tested with getting the initial location coordinates with the GPS on and the camera off, then turned the camera on for ball finding, which was transformed from camera frame to global GPS frame, and then switched off the camera. With this, the GPS was getting readings but they were unstable and not accurate enough to map the tennis ball and retrieve it. The error was ranging from +/- 1 meter to +/- 15 meters off from the actual position. This is when we switched to Odometry. 
+Using the GNSS was fine, however, additionally overlaying it with the camera ball-finding did not work. With both on, the position tracking was paused and the ball finding malfunctioned. We attempted to update the firmware to use the AP module that utilizes the GPS signal and the IMU of the GPS but there were still issues with the simultaneous usage of the camera and the storing of location coordinates. With the IMU’s sensor fusion, we were able to detect a change in orientation better than with the AM module that does not use the IMU. Later, we tested getting the initial location coordinates with the GPS on and the camera off, then turned the camera on for ball finding, which was transformed from camera frame to global GPS frame, and then switched off the camera. With this, the GPS was getting readings but they were unstable and not accurate enough to map the tennis ball and retrieve it. The error ranged from +/- 1 meter to +/- 15 meters off from the actual position. This is when we switched to Odometry. 
 
 ### Odometry Pathing  
-Initially, the odometry of the car was determined by reading the rpm from VESC and subscribing to the driving message for a change in orientation based on servo position. This was successful in converting rpm to speed, but the steering angle was highly non-linear and the drive message didn't accurately reflect the turning angle in reality. This led to error buildup and loss of localization when turning. To combat this we decided to instead use a seed IMU for the orientation then add the odometry package to subscribe to an IMU topic, then integrate the change in position using linear velocity from VESC and orientation from IMU.
+Initially, the odometry of the car was determined by reading the rpm from VESC and subscribing to the driving message for a change in orientation based on servo position. This was successful in converting rpm to speed, but the steering angle was highly non-linear and the drive message didn't accurately reflect the turning angle in reality. This led to error buildup and loss of localization when turning. To combat this we decided to use a seed IMU instead for the orientation then add the odometry package to subscribe to an IMU topic, then integrate the change in position using linear velocity from VESC and orientation from IMU.
 
 
-Overall, to start the program do:
+Overall, to start the program do the following:
 
-Open 3 terminals, all ssh into the jetson
+- 1. Open 3 terminals, all ssh into the Jetson
 
-On Terminal1: docker start -ai test_container
+- 2. On Terminal 1: docker start -ai test_container
 
-On Terminal2 & 3: docker exec -it test_container bash
+- 3. On Terminal 2 & 3: docker exec -it test_container bash
 
-On all 3 Terminals: source_ros2
+- 4. On all 3 Terminals: source_ros2
 
-On Terminal 1: ros2 launch ucsd_robocar_nav2_pkg all_nodes.launch.py
+- 5. On Terminal 1: ros2 launch ucsd_robocar_nav2_pkg all_nodes.launch.py
 
-Wait for it to show [razor_imu_node]: Publishing IMU data...
+- 6. Wait for it to show [razor_imu_node]: Publishing IMU data...
 
-On Terminal2: ros2 run team5_project find_tennis_ball --ros-args -r __ns:=/team5
+- 7. On Terminal2: ros2 run team5_project find_tennis_ball --ros-args -r __ns:=/team5
 
-On Terminal3: ros2 run team5_project follow_ball --ros-args -r __ns:=/team5
+- 8. On Terminal3: ros2 run team5_project follow_ball --ros-args -r __ns:=/team5
 
 
 ### CAD 
