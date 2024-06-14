@@ -135,5 +135,5 @@ Python Library of NVIDIA Jetson GPIO: https://github.com/NVIDIA/jetson-gpio/tree
 Python Robotics: https://github.com/AtsushiSakai/PythonRobotics/tree/master 
 
 ### Acknowledgements 
-Very thankful to Professor Jack Silberman, TA Arjun , and the entire MAE 148 Spring 2024 Class!
+Very thankful to Professor Jack Silberman, TA Arjun Naageshwaran, and the entire MAE 148 Spring 2024 Class!
 
