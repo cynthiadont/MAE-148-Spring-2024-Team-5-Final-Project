@@ -58,6 +58,7 @@ Using the GNSS was fine however, additionally overlaying it with the camera ball
 ### Odometry Pathing  
 Initially, the odometry of the car was determined by reading the rpm from VESC and subscribing to the driving message for a change in orientation based on servo position. This was successful in converting rpm to speed, but the steering angle was highly non-linear and the drive message didn't accurately reflect the turning angle in reality. This led to error buildup and loss of localization when turning. To combat this we decided to instead use a seed IMU for the orientation then add the odometry package to subscribe to an IMU topic, then integrate the change in position using linear velocity from VESC and orientation from IMU.
 
+
 Overall, to start the program do:
 Open 3 terminals, all ssh into the jetson
 On Terminal1: docker start -ai test_container
