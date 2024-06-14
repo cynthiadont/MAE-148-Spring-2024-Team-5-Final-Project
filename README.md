@@ -79,6 +79,9 @@ Overall, to start the program do the following:
 8. On Terminal3: ros2 run team5_project follow_ball --ros-args -r __ns:=/team5
 
 
+[![Odometry Demo](http://img.youtube.com/vi/VSpBKpGFqQQ.jpg)](http://www.youtube.com/watch?v=VSpBKpGFqQQ "Odometry Demo")
+
+
 ### CAD 
 
 Early Grabber Mechanism Designs and Ideas: 
