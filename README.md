@@ -7,17 +7,17 @@ Team 5 - Saimai Lau - MAE, Ryan Salas - MAE, Cynthia Do - MAE, Theo Emery - MAE
 
 <details>
 <summary> Table of Contents </summary>
- 
-### Overview 
-### RC Car 
-### Main Goals
-### Nice-to-Haves 
-### P
-### Issues and Solutions 
+
+[Overview](#overview)
+
+[Pathing Journey](#pathing-journey)
+
+[References & Acknowledgements](#references) 
+
 </details> 
 
 # Overview
-We wanted to make an RC car that would be able to fulfill the responsibilities of a ball boy in tennis matches. The responsibilities 
+We wanted to make an RC car that would be able to fulfill the responsibilities of a ball boy in tennis matches. The duties of a ball boy are primarily to retrieve the ball when out of play and to provide balls to the players. We aimed to primarily achieve this first task with the second being a nice-to-have feature. 
 
 ### RC Car 
 <img src="https://media.discordapp.net/attachments/879993760937816084/1248458336668749895/IMG_5586.jpg?ex=6663bcee&is=66626b6e&hm=20503c054fa5e9fecb3b17bac04db99c57acab082e7b6bc326c7debe89365978&=&format=webp&width=501&height=669" width = "400">
@@ -53,12 +53,21 @@ For path tracking, like PID control, it adjusts the inputs for steering the RC C
 [![LQR Simulation in ROS2](http://img.youtube.com/vi/OvJ9mGfcxE4/0.jpg)](http://www.youtube.com/watch?v=OvJ9mGfcxE4 "LQR Simualtion in ROS2")
 
 ### GNSS / IMU
-unstable with camera, tried update the firmware to use the AP module which uses the gps signal and IMU, but still had issues with the camera where the location coordinates were not stored and kept, with the imu for sensor fusion, then it detects change in orientation better htan the AM module which does not use the IMU, 
-we tried getting the initial location coordinates first then turn on the camera to find the tennis ball which was transformed from camera frame into global gps frame then switched off the camera 
-then the gps wasnt accurate enough to get to the tennis ball with this, error was about +/- 1 meter so we switched to odometry
+Using the GNSS was fine however, additionally overlaying it with the camera ball-finding did not work. With both on, the position tracking was paused and the ball finding was malfunctioning. We attempted to update the firmware to use the AP module that utilizes the GPS signal and the IMU of the GPS but there were still issues with the simultaneous usage of the camera and the storing of location coordinates. With the IMU’s sensor fusion, we were able to detect a change in orientation better than with the AM module that does not use the IMU. Later, we tested with getting the initial location coordinates with the GPS on and the camera off, then turned the camera on for ball finding, which was transformed from camera frame to global GPS frame, and then switched off the camera. With this, the GPS was getting readings but they were unstable and not accurate enough to map the tennis ball and retrieve it. The error was ranging from +/- 1 meter to +/- 15 meters off from the actual position. This is when we switched to Odometry. 
 
 ### Odometry Pathing  
 Initially, the odometry of the car was determined by reading the rpm from VESC and subscribing to the driving message for a change in orientation based on servo position. This was successful in converting rpm to speed, but the steering angle was highly non-linear and the drive message didn't accurately reflect the turning angle in reality. This led to error buildup and loss of localization when turning. To combat this we decided to instead use a seed IMU for the orientation then add the odometry package to subscribe to an IMU topic, then integrate the change in position using linear velocity from VESC and orientation from IMU.
+
+Overall, to start the program do:
+Open 3 terminals, all ssh into the jetson
+On Terminal1: docker start -ai test_container
+On Terminal2 & 3: docker exec -it test_container bash
+On all 3 Terminals: source_ros2
+On Terminal 1: ros2 launch ucsd_robocar_nav2_pkg all_nodes.launch.py
+Wait for it to show [razor_imu_node]: Publishing IMU data...
+On Terminal2: ros2 run team5_project find_tennis_ball --ros-args -r __ns:=/team5
+On Terminal3: ros2 run team5_project follow_ball --ros-args -r __ns:=/team5
+
 
 ### CAD 
 
@@ -85,16 +94,37 @@ Early Grabber Mechanism Designs and Ideas:
 </p>
 
 ### References 
+
 Odometry Calibration Guide: https://f1tenth.readthedocs.io/en/foxy_test/getting_started/driving/drive_calib_odom.html 
-https://github.com/ros-drivers/nmea_navsat_driver/tree/master 
-https://www.seeedstudio.com/Seeed-XIAO-BLE-Sense-nRF52840-p-5253.html
-RazorIMU: https://github.com/NikitaB04/razorIMU_9dof/tree/main
-PointOne ROS2 Driver: https://github.com/PointOneNav/ros2-fusion-engine-driver/tree/main
-PointOne Calibration Understanding: https://pointonenav.com/news/calibration-for-ins-rtk/
-PointOne Firmware: https://github.com/PointOneNav/firmware-tools/tree/main
-https://pointonenav.com/wp-content/uploads/2023/09/FusionEngine-Message-Specification-v0.18.pdf
-ROS2Foxy: https://f1tenth.readthedocs.io/en/foxy_test/getting_started/driving/drive_calib_odom.html
-VESC Controller: https://github.com/f1tenth/vesc/tree/ros2
-https://github.com/ros-drivers/ackermann_msgs/tree/ros2
+
+ROS Driver NasSat: https://github.com/ros-drivers/nmea_navsat_driver/tree/master 
+
+IMU: https://www.seeedstudio.com/Seeed-XIAO-BLE-Sense-nRF52840-p-5253.html 
+
+RazorIMU: https://github.com/NikitaB04/razorIMU_9dof/tree/main 
+
+PointOne ROS2 Driver: https://github.com/PointOneNav/ros2-fusion-engine-driver/tree/main 
+
+PointOne Calibration INS-RTK: https://pointonenav.com/news/calibration-for-ins-rtk/ 
+
+PointOne Firmware: https://github.com/PointOneNav/firmware-tools/tree/main 
+
+PointOne FusionEngine:  https://pointonenav.com/wp-content/uploads/2023/09/FusionEngine-Message-Specification-v0.18.pdf
+
+ROS2Foxy: https://f1tenth.readthedocs.io/en/foxy_test/getting_started/driving/drive_calib_odom.html 
+
+VESC Controller: https://github.com/f1tenth/vesc/tree/ros2 
+
+ROS Ackermann Steering: https://github.com/ros-drivers/ackermann_msgs/tree/ros2 
+
+PointOne Standard Dev Kit: https://pointonenav.com/wp-content/uploads/2024/05/Point-One-Standard-Dev-Kit-User-Manual-v1.23.pdf?_gl=1*boyar8*_gcl_aw*R0NMLjE3MTMxODU4NTkuQ2p3S0NBandvUE93QmhBZUVpd0FKdVhSaDU1bFFKQm5NRnZ1N3c4aGMxNjAybXlTdllZZlBxelRYU1FFLWx3Vmdpc0FvZDd6V01tZkl4b0NqUXdRQXZEX0J3RQ..*_gcl_au*MjEwNzEwMTY2MS4xNzEyMTgyNzg2 
+
+Configure PWM on Jetson Nano: https://www.seeedstudio.com/blog/2020/05/27/configure-pwm-output-on-jetson-nano-m/ 
+
+Python Library of NVIDIA Jetson GPIO: https://github.com/NVIDIA/jetson-gpio/tree/master 
+
+Python Robotics: https://github.com/AtsushiSakai/PythonRobotics/tree/master 
 
 ### Acknowledgements 
+Very thankful to Professor Jack Silberman, TA Arjun , and the entire MAE 148 Spring 2024 Class!
+
