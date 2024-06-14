@@ -59,8 +59,29 @@ Using the GNSS functioned properly, however, when additionally overlaying it wit
 ### Odometry Pathing  
 Initially, the odometry of the car was determined by reading the rpm from VESC and subscribing to the driving message for a change in orientation based on servo position. This was successful in converting rpm to speed, but the steering angle was highly non-linear and the drive message didn't accurately reflect the turning angle in reality. This led to error buildup and loss of localization when turning. To combat this we decided to use a seed IMU instead for the orientation then add the odometry package to subscribe to an IMU topic, then integrate the change in position using linear velocity from VESC and orientation from IMU.
 
+## Usage Guide
+### Setup
+Turn on IMU and vesc_with_odom:
+```
+source_ros2
+gedit src/ucsd_robocar_hub2/ucsd_robocar_nav2_pkg/config/car_config.yaml
+```
+Then set `artemis: 0` and `vesc_with_odom: 0` to `artemis: 1` and `vesc_with_odom: 1`
 
-Overall, to start the program do the following:
+Install the package and replace `vesc_odom.launch.py`:
+```
+cd /home/projects/ros2_ws/src
+git clone https://github.com/cynthiadont/MAE-148-Spring-2024-Team-5-Final-Project.git
+mv MAE-148-Spring-2024-Team-5-Final-Project/team5_project .
+mv -f MAE-148-Spring-2024-Team-5-Final-Project/vesc_odom.launch.py /home/projects/ros2_ws/src/ucsd_robocar_hub2/ucsd_robocar_actuator2_pkg/launch
+rm -r MAE-148-Spring-2024-Team-5-Final-Project
+cd /home/projects/ros2_ws
+colcon build --symlink-install --packages-select team5_project ucsd_robocar_actuator2_pkg
+source install/setup.bash
+```
+
+
+### Starting the nodes
 
 1. Open 3 terminals, all ssh into the Jetson
 
