@@ -45,7 +45,7 @@ We wanted to make an RC car that would be able to fulfill the responsibilities o
 <img src="https://media.discordapp.net/attachments/1224900279640789092/1237598768279588945/image.png?ex=666b086b&is=6669b6eb&hm=77f567fdb34778838dedec47933bc472ec1856f1d8093feaf891f2f6452aa505&=&format=webp&quality=lossless&width=1227&height=669" width = "840">
 
 ## Pathing Journey
-Initially, we began with using the GNSS localization and switched over to the GNSS IMU to attempt to stabilize the car's drift. Now we're using Odometry instead due to 
+Initially, we began with using the GNSS localization and switched over to the GNSS IMU to attempt to stabilize the car's drift. Now we're using Odometry and a Seed IMU instead due to issues with the simultaneous use of the camera. 
 
 ### LQR Control
 For path tracking, like PID control, it adjusts the inputs for steering the RC Car while accounting for errors from the calculated trajectory and works with a feedback loop for continuous updating of the inputs and path deviation.
