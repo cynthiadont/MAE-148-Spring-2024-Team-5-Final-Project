@@ -63,6 +63,7 @@ Initially, the odometry of the car was determined by reading the rpm from VESC a
 ### Setup
 Turn on IMU and vesc_with_odom:
 ```
+docker start -ai test_container
 source_ros2
 gedit src/ucsd_robocar_hub2/ucsd_robocar_nav2_pkg/config/car_config.yaml
 ```
@@ -76,7 +77,7 @@ mv MAE-148-Spring-2024-Team-5-Final-Project/team5_project .
 mv -f MAE-148-Spring-2024-Team-5-Final-Project/vesc_odom.launch.py /home/projects/ros2_ws/src/ucsd_robocar_hub2/ucsd_robocar_actuator2_pkg/launch
 rm -r MAE-148-Spring-2024-Team-5-Final-Project
 cd /home/projects/ros2_ws
-colcon build --symlink-install --packages-select team5_project ucsd_robocar_actuator2_pkg
+colcon build --packages-select team5_project ucsd_robocar_actuator2_pkg
 source install/setup.bash
 ```
 
