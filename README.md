@@ -59,7 +59,7 @@ Using the GNSS functioned properly, however, when additionally overlaying it wit
 ### Odometry Pathing  
 Initially, the odometry of the car was determined by reading the rpm from VESC and subscribing to the driving message for a change in orientation based on servo position. This was successful in converting rpm to speed, but the steering angle was highly non-linear and the drive message didn't accurately reflect the turning angle in reality. This led to error buildup and loss of localization when turning. To combat this we decided to use a seed IMU instead for the orientation then add the odometry package to subscribe to an IMU topic, then integrate the change in position using linear velocity from VESC and orientation from IMU.
 
-## Usage Guide
+## Usage
 ### Setup
 Turn on IMU and vesc_with_odom:
 ```
